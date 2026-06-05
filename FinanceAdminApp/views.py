@@ -3,4 +3,10 @@ from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
-    return HttpResponse('Hello')
+    return render(request, 'main.html', {})
+
+def categories(request):
+    return render(request, 'categoryForm.html', {})
+
+def accounts(request):
+    return render(request, 'accountForm.html', {})

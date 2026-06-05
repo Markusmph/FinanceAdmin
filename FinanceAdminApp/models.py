@@ -24,3 +24,9 @@ class Category(models.Model):
     user = models.ForeignKey(Profile, on_delete = models.CASCADE)
     name = models.CharField(max_length = 20)
     description = models.CharField(max_length = 300)
+
+class Account(models.Model):
+    name = models.CharField(max_length = 20)
+    cardType = models.CharField(max_length = 20)
+    bank = models.CharField(max_length = 20)
+    user = models.ForeignKey(Profile, on_delete = models.CASCADE)
