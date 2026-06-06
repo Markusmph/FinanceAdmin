@@ -1,0 +1,12 @@
+{% extends 'login_base.html' %}
+
+{% block content %}
+<form method="POST">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username"><br>
+    <label for="password">Password:</label>
+    <input type="text" id="password" name="username"><br>
+    <input type="submit" value="Log in">
+    <a href="{% url 'signup' %}">Sign up</a>
+</form>
+{% endblock %}
