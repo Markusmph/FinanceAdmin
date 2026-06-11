@@ -1,10 +1,40 @@
-{% extends base.html %}
+{% extends 'base.html' %}
 
 {% block title %}
-Edit template
+Edit {{ object_singular | title}}
 {% endblock %}
 
 {% block leftcontent %}
+<div class="row">
+    <form action="{% url 'edit_'|add:object_singular pk=object.pk %}" method="POST">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div class="row mt-2">
+                <label for="{{ field.label }}" class="form-label">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+            </div>
+        {% endfor %}
+        
+        <div class="row mt-2">
+            <div class="col">
+                <input type="submit" value="Confirm">
+            </div>
+            <div class="col">
+                <a href="{% url object_plural %}">Back</a>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row mt-2">
+    <form action="{% url 'delete_'|add:object_singular pk=object.pk%}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Delete" style="color:red">
+    </form>
+</div>
+
 {% endblock %}
 
 {% block rightcontent %}

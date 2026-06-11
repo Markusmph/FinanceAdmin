@@ -117,6 +117,15 @@ def edit_account(request, pk):
         if form.is_valid():
             form.save()
             return redirect('accounts')
-    else:
-        account = AccountForm(instance = account)
-    return render(request, 'default_edit.html', {'object': account})
+    elif request.method == 'GET':
+        form = AccountForm(instance = account)
+    return render(request, 'default_edit.html', {
+        'form': form,
+        'object': account,
+        'object_singular': 'account',
+        'object_plural': 'accounts'
+    })
+
+def delete_account(request, pk):
+    Account.objects.filter(pk = pk).delete()
+    return redirect('accounts')
