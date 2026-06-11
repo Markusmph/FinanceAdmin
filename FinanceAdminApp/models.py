@@ -13,6 +13,7 @@ class Category(models.Model):
     name = models.CharField(max_length = 255)
     description = models.TextField(max_length = 1024)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
+    
     def __str__(self):
         return self.name
 
@@ -31,3 +32,12 @@ class Account(models.Model):
 
     def __str__(self):
         return f'{name} ({account_type} from bank {bank})'
+
+
+class IncomeCustomization(models.Model):
+    name = models.CharField(max_length = 255)
+    periodic = models.BooleanField()
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+
+    def __str__(self):
+        return self.name
