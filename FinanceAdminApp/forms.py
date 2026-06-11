@@ -17,7 +17,7 @@ class ProfileForm(forms.ModelForm):
 class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
-        fields = ['name', 'cardType', 'bank']
+        fields = ['name', 'bank', 'account_type']
 
 class CategoryForm(forms.ModelForm):
     class Meta:

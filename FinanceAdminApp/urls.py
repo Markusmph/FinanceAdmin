@@ -1,9 +1,25 @@
 from django.urls import path
+from django.contrib.auth.views import LoginView, LogoutView
 from . import views
+from .views import CategoriesView
 
 urlpatterns = [
-    path('', views.login, name='login'),
+    # Login and signup
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
     path('signup/', views.signup, name='signup'),
-    path('category/', views.add_category, name='categories'),
-    path('accounts/', views.accounts, name='accounts'),
+
+    # App
+    path('home/', views.home, name='home'),
+        # Categories
+        path('categories/', CategoriesView.as_view(), name='categories'),
+        path('categories/add', views.add_category, name='add_category'),
+        path('categories/edit/<int:pk>', views.edit_category, name='edit_category'),
+    # path('categories/', views.categories, name='categories'),
+        # Accounts
+        path('accounts/', views.list_accounts, name='accounts'),
+        path('accounts/add', views.add_account, name='add_account'),
+        path('accounts/edit/<int:pk>', views.edit_account, name='edit_account'),
+    path('income_customizations/', views.income_customizations, name='income_customizations'),
+    path('transactions/', views.transactions, name='transactions'),
 ]

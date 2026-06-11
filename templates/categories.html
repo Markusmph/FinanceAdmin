@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Categories
+{% endblock %}
+
+{% block leftcontent %}
+<div class="row">
+    <a href="">Add category</a>
+</div>
+{% endblock %}
+
+{% block rightcontent %}
+{% for category in categories %}
+<div class="row">
+    <p>{{category.name}}: {{category.description}}</p>
+</div>
+{% endfor %}
+{% endblock %}

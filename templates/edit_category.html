@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit Category
+{% endblock %}
+
+{% block leftcontent %}
+<form action="{% url 'edit_category' pk=category.pk %}" method="POST">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <div class="row mt-2">
+            <label for="{{ field.label }}" class="form-label">
+                {{ field.label }}
+            </label>
+            {{ field }}
+        </div>
+    {% endfor %}
+    
+   <div class="row mt-2">
+        <div class="col">
+            <input type="submit" value="Modify category">
+        </div>
+        <div class="col">
+            <a href="{% url 'categories' %}">Back</a>
+        </div>
+    </div>
+
+</form>
+{% endblock %}
+
+{% block rightcontent %}
+{% endblock %}

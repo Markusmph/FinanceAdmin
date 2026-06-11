@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Add {{ object_singular }}
+{% endblock %}
+
+{% block leftcontent %}
+<form action="{% url 'add_account' %}" method="POST">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <div class="row mt-2">
+            <label for="{{ field.label }}" class="form-label">
+                {{ field.label }}
+            </label>
+            {{ field }}
+        </div>
+    {% endfor %}
+    
+    <div class="row mt-2">
+        <div class="col">
+            <input type="submit" value="Add {{ object_singular }}">
+        </div>
+        <div class="col">
+            <a href="{% url object_plural %}">Back</a>
+        </div>
+    </div>
+
+</form>
+{% endblock %}
+
+{% block rightcontent %}
+{% endblock %}

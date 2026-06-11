@@ -10,12 +10,24 @@ class Profile(models.Model):
     monthly_net_income = models.FloatField()
 
 class Category(models.Model):
-    name = models.CharField(max_length = 20)
-    description = models.CharField(max_length = 300)
-    # user = models.ForeignKey(User, on_delete = models.CASCADE)
+    name = models.CharField(max_length = 255)
+    description = models.TextField(max_length = 1024)
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    def __str__(self):
+        return self.name
 
 class Account(models.Model):
-    name = models.CharField(max_length = 20)
-    cardType = models.CharField(max_length = 20)
-    bank = models.CharField(max_length = 20)
-    # user = models.ForeignKey(Profile, on_delete = models.CASCADE)
+    ACCOUNT_TYPES = [
+        ('cash', 'Cash'),
+        ('debit', 'Debit Card'),
+        ('credit', 'Credit Card')
+    ]
+
+    name = models.CharField(max_length = 255)
+    bank = models.CharField(max_length = 255)
+    account_type = models.CharField(max_length = 20, choices = ACCOUNT_TYPES, default = 'debit')
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    balance = models.DecimalField(max_digits = 12, decimal_places = 2, default = 0)
+
+    def __str__(self):
+        return f'{name} ({account_type} from bank {bank})'
