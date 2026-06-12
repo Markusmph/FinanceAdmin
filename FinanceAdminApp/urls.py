@@ -25,5 +25,10 @@ urlpatterns = [
 
         # Income Customizations
         path('income-customizations/', views.income_customizations, name='income_customizations'),
-    path('transactions/', views.transactions, name='transactions'),
+        path('income-customizations/add', views.add_income_customization, name = 'add_income_customization'),
+        path('income-customizations/edit/<int:pk>', views.edit_income_customization, name = 'edit_income_customization'),
+        path('income-customizations/delete/<int:pk>', views.delete_income_customization, name = 'delete_income_customization'),
+
+        # Transactions
+        path('transactions/', views.transactions, name='transactions'),
 ]

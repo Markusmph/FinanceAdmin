@@ -30,4 +30,16 @@ Add {{ object_singular_spaces | title }}
 {% endblock %}
 
 {% block rightcontent %}
+<form>
+    {% for category in categories %}
+        <div class="row">
+            <div class="col">
+                {{ category.name }}:
+            </div>
+            <div class="col">
+                <input type="number" min="0.0" max="100.00">%
+            </div>
+        </div>
+    {% endfor %}
+</form>
 {% endblock %}
