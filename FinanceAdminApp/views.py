@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProfileForm, CategoryForm, AccountForm, CustomUserCreationForm, IncomeCustomizationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from .models import Category, Account, IncomeCustomization
+from .models import Category, Account, IncomeCustomization, IncomeCustomizationWithCategory
 from django.views.generic.list import ListView
 # from django.contrib.auth.forms import UserCreationForm
 
@@ -144,11 +144,27 @@ def add_income_customization(request):
             income_customization = form.save(commit = False)
             income_customization.user = request.user
             income_customization.save()
+
+            category_ids = request.POST.getlist('category_pk')
+            percentages = request.POST.getlist('percentage')
+
+            for category_pk, percentage in zip(category_ids, percentages):
+                category = Category.objects.get(pk = category_pk)
+                IncomeCustomizationWithCategory.objects.create(
+                    percentage = percentage,
+                    category = category,
+                    income_customization = income_customization
+                )
+
             return redirect('income_customizations')
-    else:
-        form = IncomeCustomizationForm()
+    elif request.method == 'GET':
         categories = Category.objects.filter(user = request.user)
-    return render(request, 'add_income_customization.html', {'form': form, 'categories': categories} | income_customizations_dict)
+        categories_count = categories.count()
+        income_customization_form = IncomeCustomizationForm()
+    return render(request, 'add_income_customization.html', {
+        'income_customization_form': income_customization_form,
+        'categories': categories,
+    } | income_customizations_dict)
 
 def edit_income_customization(request, pk):
     income_customization = get_object_or_404(IncomeCustomization, pk = pk)

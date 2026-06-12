@@ -8,12 +8,26 @@ Add {{ object_singular_spaces | title }}
 <form action="{% url 'add_'|add:object_singular_underscores %}" method="POST">
     {% csrf_token %}
 
-    {% for field in form %}
+    {{ income_customization_with_category_formset.management_form }}
+
+    {% for field in income_customization_form %}
         <div class="row mt-2">
             <label for="{{ field.label }}" class="form-label">
                 {{ field.label }}
             </label>
             {{ field }}
+        </div>
+    {% endfor %}
+
+    {% for category in categories %}
+        <div class="row mt-2">
+            <div class="col">
+                {{ category }}:
+            </div>
+            <div class="col">
+                <input type="hidden" name="category_pk" value="{{ category.pk }}">
+                <input type="number" name="percentage">%
+            </div>
         </div>
     {% endfor %}
     
@@ -30,16 +44,4 @@ Add {{ object_singular_spaces | title }}
 {% endblock %}
 
 {% block rightcontent %}
-<form>
-    {% for category in categories %}
-        <div class="row">
-            <div class="col">
-                {{ category.name }}:
-            </div>
-            <div class="col">
-                <input type="number" min="0.0" max="100.00">%
-            </div>
-        </div>
-    {% endfor %}
-</form>
 {% endblock %}
