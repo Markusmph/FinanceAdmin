@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit {{ object_singular_spaces | title}}
+{% endblock %}
+
+{% block leftcontent %}
+<form action="{% url 'edit_'|add:object_singular_underscores  income_customization.pk %}" method="POST">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <div class="row mt-2">
+            <label for="{{ field.label }}" class="form-label">
+                {{ field.label }}
+            </label>
+            {{ field }}
+        </div>
+    {% endfor %}
+
+    {% for income_customization_with_category in income_customizations_with_category %}
+        <div class="row mt-2">
+            <div class="col">
+                {{ income_customization_with_category.category.name }}:
+            </div>
+            <div class="col">
+                <input type="hidden" name="category_pk" value="{{ income_customization_with_category.category.pk }}">
+                {% if income_customization_with_category.percentage %}
+                    <input type="number" name="percentage" value="{{ income_customization_with_category.percentage }}">%
+                {% else %}
+                    <input type="number" name="percentage">%
+                {% endif %}
+
+            </div>
+        </div>
+    {% endfor %}
+    
+    <div class="row mt-2">
+        <div class="col">
+            <input type="submit" value="Confirm">
+        </div>
+        <div class="col">
+            <a href="{% url object_plural_underscores %}">Back</a>
+        </div>
+    </div>
+
+</form>
+{% endblock %}
+
+{% block rightcontent %}
+{% endblock %}

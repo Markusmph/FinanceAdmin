@@ -8,8 +8,6 @@ Add {{ object_singular_spaces | title }}
 <form action="{% url 'add_'|add:object_singular_underscores %}" method="POST">
     {% csrf_token %}
 
-    {{ income_customization_with_category_formset.management_form }}
-
     {% for field in income_customization_form %}
         <div class="row mt-2">
             <label for="{{ field.label }}" class="form-label">

@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .models import Category, Account, IncomeCustomization, IncomeCustomizationWithCategory
 from django.views.generic.list import ListView
+from decimal import Decimal
 # from django.contrib.auth.forms import UserCreationForm
 
 def signup(request):
@@ -149,12 +150,14 @@ def add_income_customization(request):
             percentages = request.POST.getlist('percentage')
 
             for category_pk, percentage in zip(category_ids, percentages):
-                category = Category.objects.get(pk = category_pk)
-                IncomeCustomizationWithCategory.objects.create(
-                    percentage = percentage,
-                    category = category,
-                    income_customization = income_customization
-                )
+                if percentage:
+                    percentage_converted = Decimal(percentage)
+                    category = Category.objects.get(pk = category_pk)
+                    IncomeCustomizationWithCategory.objects.create(
+                        percentage = percentage_converted,
+                        category = category,
+                        income_customization = income_customization
+                    )
 
             return redirect('income_customizations')
     elif request.method == 'GET':
@@ -168,16 +171,35 @@ def add_income_customization(request):
 
 def edit_income_customization(request, pk):
     income_customization = get_object_or_404(IncomeCustomization, pk = pk)
+    income_customizations_with_category = IncomeCustomizationWithCategory.objects.filter(income_customization = income_customization)
     if request.method == 'POST':
         form = IncomeCustomizationForm(request.POST, instance = income_customization)
         if form.is_valid():
             form.save()
+
+            category_ids = request.POST.getlist('category_pk')
+            percentages = request.POST.getlist('percentage')
+
+            for category_pk, percentage in zip(category_ids, percentages):
+                if percentage:
+                    percentage_converted = Decimal(percentage)
+                    category = Category.objects.get(pk = category_pk)
+                    try:
+                        icwc = IncomeCustomizationWithCategory.objects.get(
+                            category = category, 
+                            income_customization = income_customization
+                        )
+                        icwc.percentage = percentage_converted
+                        icwc.save()
+                    except IncomeCustomizationWithCategory.DoesNotExist:
+                        raise IncomeCustomizationWithCategory.DoesNotExist
             return redirect('income_customizations')
     elif request.method == 'GET':
         form = IncomeCustomizationForm(instance = income_customization)
-    return render(request, 'default_edit.html', {
+    return render(request, 'edit_income_customization.html', {
         'form': form,
-        'object': income_customization,
+        'income_customization': income_customization,
+        'income_customizations_with_category': income_customizations_with_category
     } | income_customizations_dict)
 
 def delete_income_customization(request, pk):

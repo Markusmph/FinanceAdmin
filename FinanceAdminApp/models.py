@@ -43,9 +43,9 @@ class IncomeCustomization(models.Model):
         return self.name
 
 class IncomeCustomizationWithCategory(models.Model):
-    percentage = models.DecimalField(max_digits = 5, decimal_places = 4)
+    percentage = models.DecimalField(max_digits = 5, decimal_places = 2)
     category = models.ForeignKey(Category, on_delete = models.PROTECT, default = None)
-    income_customization = models.ForeignKey(IncomeCustomization, on_delete = models.PROTECT, default = None)
+    income_customization = models.ForeignKey(IncomeCustomization, on_delete = models.CASCADE, default = None)
 
 class CreditCardTransaction(models.Model):
     amount = models.DecimalField(max_digits = 10, decimal_places = 2)
