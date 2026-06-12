@@ -41,3 +41,23 @@ class IncomeCustomization(models.Model):
 
     def __str__(self):
         return self.name
+
+class IncomeCustomizationWithCategory(models.Model):
+    percentage = models.DecimalField(max_digits = 5, decimal_places = 2)
+
+class CreditCardTransaction(models.Model):
+    amount = models.DecimalField(max_digits = 10, decimal_places = 2)
+
+class Transaction(models.Model):
+    TRANSACTION_TYPES = (
+        ('in', 'in'),
+        ('out', 'out')
+    )
+    amount = models.IntegerField()
+    transaction_type = models.CharField(max_length = 5, choices = TRANSACTION_TYPES, default = 'in')
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    account = models.ForeignKey(Account, on_delete = models.PROTECT)
+    category = models.ForeignKey(Category, on_delete = models.PROTECT)
+    income_customization = models.ForeignKey(IncomeCustomizationWithCategory, on_delete = models.PROTECT)
+    credit_card_transaction = models.ForeignKey(CreditCardTransaction, on_delete = models.PROTECT, default = None)
+
