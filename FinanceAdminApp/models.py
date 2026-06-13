@@ -44,8 +44,8 @@ class IncomeCustomization(models.Model):
 
 class IncomeCustomizationWithCategory(models.Model):
     percentage = models.DecimalField(max_digits = 5, decimal_places = 2)
-    category = models.ForeignKey(Category, on_delete = models.PROTECT, default = None)
-    income_customization = models.ForeignKey(IncomeCustomization, on_delete = models.CASCADE, default = None)
+    category = models.ForeignKey(Category, on_delete = models.CASCADE)
+    income_customization = models.ForeignKey(IncomeCustomization, on_delete = models.CASCADE)
 
 class CreditCardTransaction(models.Model):
     amount = models.DecimalField(max_digits = 10, decimal_places = 2)
@@ -62,11 +62,6 @@ class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     account = models.ForeignKey(Account, on_delete = models.PROTECT)
     category = models.ForeignKey(Category, on_delete = models.PROTECT)
-    # income_customization = models.ForeignKey(IncomeCustomizationWithCategory, on_delete = models.PROTECT)
-    credit_card_transaction = models.ForeignKey(
-        CreditCardTransaction,
-        on_delete = models.PROTECT,
-        null = True,
-        blank = True
-    )
+    income_customization = models.ForeignKey(IncomeCustomizationWithCategory, on_delete = models.SET_NULL, null = True, blank = True)
+    credit_card_transaction = models.ForeignKey(CreditCardTransaction, on_delete = models.SET_NULL, null = True, blank = True)
 
