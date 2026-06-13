@@ -31,7 +31,7 @@ class Account(models.Model):
     balance = models.DecimalField(max_digits = 12, decimal_places = 2, default = 0)
 
     def __str__(self):
-        return f'{name} ({account_type} from bank {bank})'
+        return f'{self.name} ({self.account_type} from bank {self.bank})'
 
 
 class IncomeCustomization(models.Model):
@@ -52,15 +52,21 @@ class CreditCardTransaction(models.Model):
 
 class Transaction(models.Model):
     TRANSACTION_TYPES = (
-        ('in', 'in'),
-        ('out', 'out')
+        ('in', 'In'),
+        ('out', 'Out')
     )
     name = models.CharField(max_length = 255, default = '')
+    date = models.DateField(default = None)
     amount = models.IntegerField()
     transaction_type = models.CharField(max_length = 5, choices = TRANSACTION_TYPES, default = 'in')
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     account = models.ForeignKey(Account, on_delete = models.PROTECT)
     category = models.ForeignKey(Category, on_delete = models.PROTECT)
-    income_customization = models.ForeignKey(IncomeCustomizationWithCategory, on_delete = models.PROTECT)
-    credit_card_transaction = models.ForeignKey(CreditCardTransaction, on_delete = models.PROTECT, default = None)
+    # income_customization = models.ForeignKey(IncomeCustomizationWithCategory, on_delete = models.PROTECT)
+    credit_card_transaction = models.ForeignKey(
+        CreditCardTransaction,
+        on_delete = models.PROTECT,
+        null = True,
+        blank = True
+    )
 

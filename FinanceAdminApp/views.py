@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ProfileForm, CategoryForm, AccountForm, CustomUserCreationForm, IncomeCustomizationForm
+from .forms import ProfileForm, CategoryForm, AccountForm, CustomUserCreationForm, IncomeCustomizationForm, TransactionForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from .models import Category, Account, IncomeCustomization, IncomeCustomizationWithCategory
+from .models import Category, Account, IncomeCustomization, IncomeCustomizationWithCategory, Transaction
 from django.views.generic.list import ListView
 from decimal import Decimal
 # from django.contrib.auth.forms import UserCreationForm
@@ -32,14 +32,6 @@ def home(request):
 
 def accounts(request):
     return render(request, 'accounts.html', {})
-
-def transactions(request):
-    return render(request, 'transactions.html', {})
-
-# Categories
-def categories(request):
-    categories = Category.objects.all()
-    return render(request, 'categories.html', {'categories': categories})
 
 # -----------------------Categories----------------------------------
 class CategoriesView(ListView):
@@ -205,3 +197,45 @@ def edit_income_customization(request, pk):
 def delete_income_customization(request, pk):
     IncomeCustomization.objects.filter(pk = pk).delete()
     return redirect('income_customizations')
+
+
+# -----------------------Transactions----------------------------------
+transactions_dict = {
+    'object_plural_underscores': 'transactions',
+    'object_pluarl_spaces': 'transactions',
+    'object_singular_underscores': 'transaction',
+    'object_singular_spaces': 'transaction'
+}
+def transactions(request):
+    objects = Transaction.objects.filter(user = request.user).order_by('date')
+    return render(request, 'default_list.html', {'objects': objects} | transactions_dict)
+
+def add_transaction(request):
+    if request.method == 'POST':
+        form = TransactionForm(request.POST)
+        if form.is_valid():
+            transaction = form.save(commit = False)
+            transaction.user = request.user
+            transaction.save()
+            return redirect('transactions')
+    else:
+        form = TransactionForm()
+    return render(request, 'default_add.html', {'form': form,} | transactions_dict)
+
+def edit_transaction(request, pk):
+    transaction = get_object_or_404(Transaction, pk = pk)
+    if request.method == 'POST':
+        form = TransactionForm(request.POST, instance = transaction)
+        if form.is_valid():
+            form.save()
+            return redirect('transactions')
+    elif request.method == 'GET':
+        form = TransactionForm(instance = transaction)
+    return render(request, 'default_edit.html', {
+        'form': form,
+        'object': transaction,
+    } | transactions_dict)
+
+def delete_transaction(request, pk):
+    Transaction.objects.filter(pk = pk).delete()
+    return redirect('transactions')
