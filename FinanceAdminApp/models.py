@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import MinValueValidator, MaxValueValidator
+from datetime import date
 
 # Create your models here.
 class Profile(models.Model):
@@ -57,7 +58,7 @@ class Transaction(models.Model):
         ('out', 'Out')
     )
     name = models.CharField(max_length = 255, default = '')
-    date = models.DateField(default = None)
+    date = models.DateField(default = date.today)
     amount = models.DecimalField(max_digits = 20, decimal_places = 2)
     transaction_type = models.CharField(max_length = 5, choices = TRANSACTION_TYPES, default = 'in')
     user = models.ForeignKey(User, on_delete = models.CASCADE)
@@ -70,7 +71,7 @@ class PeriodicTransaction(models.Model):
     PERIODIC_TYPE = (
         ('daily', 'Daily'),
         ('weekly', 'Weekly'),
-        # ('every15days', 'Every 15 days'),
+        ('every15days', 'Every 15 days'),
         ('monthly', 'Monthly'),
         ('yearly', 'Yearly')
     )
@@ -112,4 +113,11 @@ class PeriodicTransaction(models.Model):
     account = models.ForeignKey(Account, on_delete = models.SET_NULL, null = True, blank = True)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     category = models.ForeignKey(Category, on_delete = models.SET_NULL, null = True, blank = True)
+    income_customization = models.ForeignKey(IncomeCustomization, on_delete = models.SET_NULL, null = True, blank = True)
+
+class Income(models.Model):
+    name = models.CharField(max_length = 255)
+    date = models.DateField(default = date.today)
+    amount = models.DecimalField(max_digits = 20, decimal_places = 2)
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
     income_customization = models.ForeignKey(IncomeCustomization, on_delete = models.SET_NULL, null = True, blank = True)

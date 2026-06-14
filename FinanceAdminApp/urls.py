@@ -40,4 +40,10 @@ urlpatterns = [
         path('periodic-transactions/add', views.add_periodic_transaction, name = 'add_periodic_transaction'),
         path('periodic-transactions/edit/<int:pk>', views.edit_periodic_transaction, name = 'edit_periodic_transaction'),
         path('periodic-transactions/delete/<int:pk>', views.delete_periodic_transaction, name = 'delete_periodic_transaction'),
+
+        # Incomes
+        path('income/', views.incomes, name = 'incomes'),
+        # path('income/add', views.add_income, name = 'add_income'),
+        # path('income/edit/<int:pk>', views.edit_income, name = 'edit_income'),
+        # path('income/delete/<int:pk>', views.delete_income, name = 'delete_income'),
 ]

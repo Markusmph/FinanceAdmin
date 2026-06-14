@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ProfileForm, CategoryForm, AccountForm, CustomUserCreationForm, IncomeCustomizationForm, TransactionForm, PeriodicTransactionForm
+from .forms import ProfileForm, CategoryForm, AccountForm, CustomUserCreationForm, IncomeCustomizationForm, TransactionForm, PeriodicTransactionForm, IncomeForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from .models import Category, Account, IncomeCustomization, IncomeCustomizationWithCategory, Transaction, PeriodicTransaction
+from .models import Category, Account, IncomeCustomization, IncomeCustomizationWithCategory, Transaction, PeriodicTransaction, Income
 from django.views.generic.list import ListView
 from decimal import Decimal
 # from django.contrib.auth.forms import UserCreationForm
@@ -278,3 +278,15 @@ def edit_periodic_transaction(request, pk):
 def delete_periodic_transaction(request, pk):
     PeriodicTransaction.objects.filter(pk = pk).delete()
     return redirect('periodic_transactions')
+
+# -----------------------Periodic Transaction----------------------------------
+incomes_dict = {
+    'object_plural_underscores': 'incomes',
+    'object_pluarl_spaces': 'incomes',
+    'object_singular_underscores': 'income',
+    'object_singular_spaces': 'income'
+}
+
+def incomes(request):
+    incomes = Income.objects.filter(user = request.user).order_by('date')
+    return render(request, 'default_list.html', {'objects': incomes} | incomes_dict)
