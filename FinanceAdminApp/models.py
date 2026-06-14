@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
 class Profile(models.Model):
@@ -57,7 +58,7 @@ class Transaction(models.Model):
     )
     name = models.CharField(max_length = 255, default = '')
     date = models.DateField(default = None)
-    amount = models.IntegerField()
+    amount = models.DecimalField(max_digits = 20, decimal_places = 2)
     transaction_type = models.CharField(max_length = 5, choices = TRANSACTION_TYPES, default = 'in')
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     account = models.ForeignKey(Account, on_delete = models.PROTECT)
@@ -65,3 +66,50 @@ class Transaction(models.Model):
     income_customization = models.ForeignKey(IncomeCustomizationWithCategory, on_delete = models.SET_NULL, null = True, blank = True)
     credit_card_transaction = models.ForeignKey(CreditCardTransaction, on_delete = models.SET_NULL, null = True, blank = True)
 
+class PeriodicTransaction(models.Model):
+    PERIODIC_TYPE = (
+        ('daily', 'Daily'),
+        ('weekly', 'Weekly'),
+        ('every15days', 'Every 15 days'),
+        ('monthly', 'Monthly'),
+        ('yearly', 'Yearly')
+    )
+    DAYS = (
+        ('monday', 'Monday'),
+        ('tuesday', 'Tuesday'),
+        ('wednesday', 'Wednesday'),
+        ('thursday', 'Thursday'),
+        ('friday', 'Friday'),
+        ('saturday', 'Saturday'),
+        ('sunday', 'Sunday')
+    )
+    MONTHS = (
+        ('jan', 'January'),
+        ('feb', 'February'),
+        ('mar', 'March'),
+        ('apr', 'April'),
+        ('may', 'May'),
+        ('jun', 'June'),
+        ('jul', 'July'),
+        ('aug', 'August'),
+        ('sep', 'September'),
+        ('oct', 'October'),
+        ('nov', 'November'),
+        ('dec', 'December')
+    )
+    TRANSACTION_TYPES = (
+        ('in', 'In'),
+        ('out', 'Out')
+    )
+    name = models.CharField(max_length = 255)
+    amount = models.DecimalField(max_digits = 20, decimal_places = 2)
+    periodic_type = models.CharField(max_length = 20, choices = PERIODIC_TYPE)
+    periodic_weekly_day = models.CharField(max_length = 20, choices = DAYS, null = True, blank = True)
+    periodic_monthly_day = models.IntegerField(validators = [MinValueValidator(1), MaxValueValidator(31)], null = True, blank = True)
+    periodic_yearly_month = models.CharField(max_length = 20, choices = MONTHS, null = True, blank = True)
+    periodic_yearly_day = models.IntegerField(validators = [MinValueValidator(1), MaxValueValidator(31)], null = True, blank = True)
+    transaction_type = models.CharField(max_length = 5, choices = TRANSACTION_TYPES, default = 'in')
+    account = models.ForeignKey(Account, on_delete = models.SET_NULL, null = True, blank = True)
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    category = models.ForeignKey(Category, on_delete = models.SET_NULL, null = True, blank = True)
+    income_customization = models.ForeignKey(IncomeCustomization, on_delete = models.SET_NULL, null = True, blank = True)
