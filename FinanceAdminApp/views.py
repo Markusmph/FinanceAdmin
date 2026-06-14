@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ProfileForm, CategoryForm, AccountForm, CustomUserCreationForm, IncomeCustomizationForm, TransactionForm
+from .forms import ProfileForm, CategoryForm, AccountForm, CustomUserCreationForm, IncomeCustomizationForm, TransactionForm, PeriodicTransactionForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from .models import Category, Account, IncomeCustomization, IncomeCustomizationWithCategory, Transaction
+from .models import Category, Account, IncomeCustomization, IncomeCustomizationWithCategory, Transaction, PeriodicTransaction
 from django.views.generic.list import ListView
 from decimal import Decimal
 # from django.contrib.auth.forms import UserCreationForm
@@ -239,3 +239,42 @@ def edit_transaction(request, pk):
 def delete_transaction(request, pk):
     Transaction.objects.filter(pk = pk).delete()
     return redirect('transactions')
+
+# -----------------------Periodic Transaction----------------------------------
+periodic_transactions_dict = {
+    'object_plural_underscores': 'periodic_transactions',
+    'object_pluarl_spaces': 'periodic transactions',
+    'object_singular_underscores': 'periodic_transaction',
+    'object_singular_spaces': 'periodic transaction'
+}
+
+def periodic_transactions(request):
+    periodic_transactions = PeriodicTransaction.objects.filter(user = request.user).order_by('name')
+    return render(request, 'default_list.html', {'objects': periodic_transactions} | periodic_transactions_dict)
+
+def add_periodic_transaction(request):
+    if request.method == 'POST':
+        form = PeriodicTransactionForm(request.POST)
+        if form.is_valid():
+            periodic_transaction = form.save(commit = False)
+            periodic_transaction.user = request.user
+            periodic_transaction.save()
+            return redirect('periodic_transactions')
+    else:
+        form = PeriodicTransactionForm()
+    return render(request, 'default_add.html', {'form': form,} | periodic_transactions_dict)
+
+def edit_periodic_transaction(request, pk):
+    periodic_transaction = get_object_or_404(PeriodicTransaction, pk = pk)
+    if request.method == 'POST':
+        form = PeriodicTransactionForm(request.POST, instance = periodic_transaction)
+        if form.is_valid():
+            form.save()
+            return redirect('periodic_transactions')
+    elif request.method == 'GET':
+        form = PeriodicTransactionForm(instance = periodic_transaction)
+    return render(request, 'default_edit.html', {'form': form, 'object': periodic_transaction} | periodic_transactions_dict)
+
+def delete_periodic_transaction(request, pk):
+    PeriodicTransaction.objects.filter(pk = pk).delete()
+    return redirect('periodic_transactions')

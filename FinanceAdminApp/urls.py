@@ -34,4 +34,10 @@ urlpatterns = [
         path('transactions/add', views.add_transaction, name = 'add_transaction'),
         path('transactions/edit/<int:pk>', views.edit_transaction, name = 'edit_transaction'),
         path('transactions/delete/<int:pk>', views.delete_transaction, name = 'delete_transaction'),
+
+        # Periodic Transactions
+        path('periodic-transactions/', views.periodic_transactions, name = 'periodic_transactions'),
+        path('periodic-transactions/add', views.add_periodic_transaction, name = 'add_periodic_transaction'),
+        path('periodic-transactions/edit/<int:pk>', views.edit_periodic_transaction, name = 'edit_periodic_transaction'),
+        path('periodic-transactions/delete/<int:pk>', views.delete_periodic_transaction, name = 'delete_periodic_transaction'),
 ]

@@ -70,7 +70,7 @@ class PeriodicTransaction(models.Model):
     PERIODIC_TYPE = (
         ('daily', 'Daily'),
         ('weekly', 'Weekly'),
-        ('every15days', 'Every 15 days'),
+        # ('every15days', 'Every 15 days'),
         ('monthly', 'Monthly'),
         ('yearly', 'Yearly')
     )
