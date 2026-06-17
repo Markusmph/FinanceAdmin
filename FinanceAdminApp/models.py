@@ -52,21 +52,6 @@ class IncomeCustomizationWithCategory(models.Model):
 class CreditCardTransaction(models.Model):
     amount = models.DecimalField(max_digits = 10, decimal_places = 2)
 
-class Transaction(models.Model):
-    TRANSACTION_TYPES = (
-        ('in', 'In'),
-        ('out', 'Out')
-    )
-    name = models.CharField(max_length = 255, default = '')
-    date = models.DateField(default = date.today)
-    amount = models.DecimalField(max_digits = 20, decimal_places = 2)
-    transaction_type = models.CharField(max_length = 5, choices = TRANSACTION_TYPES, default = 'in')
-    user = models.ForeignKey(User, on_delete = models.CASCADE)
-    account = models.ForeignKey(Account, on_delete = models.PROTECT)
-    category = models.ForeignKey(Category, on_delete = models.PROTECT)
-    income_customization = models.ForeignKey(IncomeCustomizationWithCategory, on_delete = models.SET_NULL, null = True, blank = True)
-    credit_card_transaction = models.ForeignKey(CreditCardTransaction, on_delete = models.SET_NULL, null = True, blank = True)
-
 class PeriodicTransaction(models.Model):
     PERIODIC_TYPE = (
         ('daily', 'Daily'),
@@ -115,9 +100,32 @@ class PeriodicTransaction(models.Model):
     category = models.ForeignKey(Category, on_delete = models.SET_NULL, null = True, blank = True)
     income_customization = models.ForeignKey(IncomeCustomization, on_delete = models.SET_NULL, null = True, blank = True)
 
+    def __str__(self):
+        return f'{self.name}: {self.periodic_type}'
+
+class Transaction(models.Model):
+    TRANSACTION_TYPES = (
+        ('in', 'In'),
+        ('out', 'Out')
+    )
+    name = models.CharField(max_length = 255, default = '')
+    date = models.DateField(default = date.today)
+    amount = models.DecimalField(max_digits = 20, decimal_places = 2)
+    transaction_type = models.CharField(max_length = 5, choices = TRANSACTION_TYPES, default = 'in')
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    account = models.ForeignKey(Account, on_delete = models.PROTECT)
+    category = models.ForeignKey(Category, on_delete = models.PROTECT)
+    income_customization = models.ForeignKey(IncomeCustomizationWithCategory, on_delete = models.SET_NULL, null = True, blank = True)
+    credit_card_transaction = models.ForeignKey(CreditCardTransaction, on_delete = models.SET_NULL, null = True, blank = True)
+    periodic_transaction = models.ForeignKey(PeriodicTransaction, on_delete = models.SET_NULL, null = True, blank = True)
+
+    def __str__(self):
+        return f'{self.name}'
+
 class Income(models.Model):
     name = models.CharField(max_length = 255)
     date = models.DateField(default = date.today)
     amount = models.DecimalField(max_digits = 20, decimal_places = 2)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     income_customization = models.ForeignKey(IncomeCustomization, on_delete = models.SET_NULL, null = True, blank = True)
+    category = models.ForeignKey(Category, on_delete = models.SET_NULL, null = True, blank = True)

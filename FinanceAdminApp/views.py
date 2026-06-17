@@ -6,6 +6,7 @@ from .models import Category, Account, IncomeCustomization, IncomeCustomizationW
 from django.views.generic.list import ListView
 from decimal import Decimal
 # from django.contrib.auth.forms import UserCreationForm
+from datetime import date
 
 def signup(request):
     if request.method == 'POST':
@@ -290,3 +291,50 @@ incomes_dict = {
 def incomes(request):
     incomes = Income.objects.filter(user = request.user).order_by('date')
     return render(request, 'default_list.html', {'objects': incomes} | incomes_dict)
+
+def add_income(request):
+    if request.method == 'POST':
+        form = IncomeForm(request.POST)
+        if form.is_valid():
+            income = form.save(commit = False)
+            income.user = request.user
+            income.save()
+        return redirect('incomes')
+    elif request.method == 'GET':
+        form = IncomeForm()
+    return render(request, 'default_add.html', {'form': form} | incomes_dict)
+
+def edit_income(request, pk):
+    income = get_object_or_404(Income, pk = pk)
+    if request.method == 'POST':
+        form = IncomeForm(request.POST, instance = income)
+        if form.is_valid():
+            form.save()
+        return redirect('incomes')
+    elif request.method == 'GET':
+        form = IncomeForm(instance = income)
+    return render(request, 'default_edit.html', {'form': form, 'object': income} | incomes_dict)
+
+def delete_income(request, pk):
+    Income.objects.filter(pk = pk).delete()
+    return redirect('incomes')
+
+
+# -----------------------Auto add----------------------------------
+def auto_add(request):
+    now = date.today
+    periodic_transactions = PeriodicTransaction.objects.filter(user = request.user)
+    for periodic_transaction in periodic_transactions:
+        if periodic_transaction.periodic_type == 'daily':
+            last_daily_transaction = Transaction.objects.filter(user = request.user, periodic_transaction = periodic_transaction).order_by('date').last()
+            # list_of_days = [day for day in range(last_daily_transaction, date.today)]
+            # print(list_of_days)
+        elif periodic_transaction.periodic_type == 'weekly':
+            print('w')
+        elif periodic_transaction.periodic_type == 'every15days':
+            print('e')
+        elif periodic_transaction.periodic_type == 'monthly':
+            print('m')
+        elif periodic_transaction.periodic_type == 'yearly':
+            print('y')
+    return redirect('home')

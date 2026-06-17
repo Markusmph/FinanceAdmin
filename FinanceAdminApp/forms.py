@@ -32,7 +32,7 @@ class IncomeCustomizationForm(forms.ModelForm):
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ['name', 'date', 'amount', 'transaction_type', 'account', 'category']
+        fields = ['name', 'date', 'amount', 'transaction_type', 'account', 'category', 'periodic_transaction']
 
 class PeriodicTransactionForm(forms.ModelForm):
     class Meta:
@@ -54,4 +54,4 @@ class PeriodicTransactionForm(forms.ModelForm):
 class IncomeForm(forms.ModelForm):
     class Meta:
         model = Income
-        fields = ['amount', 'income_customization']
+        fields = ['name', 'date', 'amount', 'income_customization']
