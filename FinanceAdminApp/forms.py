@@ -1,5 +1,5 @@
 from django import forms
-from .models import Profile, Account, Category, IncomeCustomization, IncomeCustomizationWithCategory, Transaction, PeriodicTransaction
+from .models import Profile, Account, Category, IncomeCustomization, IncomeCustomizationWithCategory, Transaction, PeriodicTransaction, Income
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -32,7 +32,7 @@ class IncomeCustomizationForm(forms.ModelForm):
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ['name', 'date', 'amount', 'transaction_type', 'account', 'category']
+        fields = ['name', 'date', 'amount', 'transaction_type', 'account', 'category', 'periodic_transaction']
 
 class PeriodicTransactionForm(forms.ModelForm):
     class Meta:
@@ -50,3 +50,8 @@ class PeriodicTransactionForm(forms.ModelForm):
             'category',
             'income_customization'
         ]
+
+class IncomeForm(forms.ModelForm):
+    class Meta:
+        model = Income
+        fields = ['name', 'date', 'amount', 'income_customization']
