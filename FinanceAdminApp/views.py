@@ -248,7 +248,7 @@ periodic_transactions_dict = {
     'object_singular_underscores': 'periodic_transaction',
     'object_singular_spaces': 'periodic transaction'
 }
-
+@login_required
 def periodic_transactions(request):
     periodic_transactions = PeriodicTransaction.objects.filter(user = request.user).order_by('name')
     return render(request, 'default_list.html', {'objects': periodic_transactions} | periodic_transactions_dict)
