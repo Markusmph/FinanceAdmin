@@ -35,6 +35,12 @@ urlpatterns = [
         path('transactions/edit/<int:pk>', views.edit_transaction, name = 'edit_transaction'),
         path('transactions/delete/<int:pk>', views.delete_transaction, name = 'delete_transaction'),
 
+        # Credit Card Transactions
+        path('credit-card-transactions/', views.credit_card_transactions, name='credit_card_transactions'),
+        path('credit-card-transactions/add', views.add_credit_card_transaction, name = 'add_credit_card_transaction'),
+        path('credit-card-transactions/edit/<int:pk>', views.edit_credit_card_transaction, name = 'edit_credit_card_transaction'),
+        path('credit-card-transactions/delete/<int:pk>', views.delete_credit_card_transaction, name = 'delete_credit_card_transaction'),
+
         # Periodic Transactions
         path('periodic-transactions/', views.periodic_transactions, name = 'periodic_transactions'),
         path('periodic-transactions/add', views.add_periodic_transaction, name = 'add_periodic_transaction'),

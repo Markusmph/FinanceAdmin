@@ -1,8 +1,28 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ProfileForm, CategoryForm, AccountForm, CustomUserCreationForm, IncomeCustomizationForm, TransactionForm, PeriodicTransactionForm, IncomeForm
+from .forms import (
+    AccountForm, 
+    CategoryForm,
+    CreditCardTransactionForm,
+    CustomUserCreationForm,
+    IncomeCustomizationForm, 
+    IncomeForm,
+    PeriodicTransactionForm,
+    ProfileForm,
+    TransactionForm
+)
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from .models import Category, Account, IncomeCustomization, IncomeCustomizationWithCategory, Transaction, PeriodicTransaction, Income
+from .models import (
+    Account,
+    Category,
+    CreditCardTransaction,
+    Income,
+    IncomeCustomization,
+    IncomeCustomizationWithCategory,
+    PeriodicTransaction,
+    Profile,
+    Transaction,
+)
 from django.views.generic.list import ListView
 from decimal import Decimal
 # from django.contrib.auth.forms import UserCreationForm
@@ -240,6 +260,47 @@ def edit_transaction(request, pk):
 def delete_transaction(request, pk):
     Transaction.objects.filter(pk = pk).delete()
     return redirect('transactions')
+
+# -----------------------Credit Card Transactions----------------------------------
+transactions_dict = {
+    'object_plural_underscores': 'credit_card_transactions',
+    'object_pluarl_spaces': 'credit card transactions',
+    'object_singular_underscores': 'credit_card_transaction',
+    'object_singular_spaces': 'credit card transaction'
+}
+def credit_card_transactions(request):
+    objects = CreditCardTransaction.objects.filter(user = request.user).order_by('date')
+    return render(request, 'default_list.html', {'objects': objects} | transactions_dict)
+
+def add_credit_card_transaction(request):
+    if request.method == 'POST':
+        form = CreditCardTransactionForm(request.POST)
+        if form.is_valid():
+            credit_card_transaction = form.save(commit = False)
+            credit_card_transaction.user = request.user
+            credit_card_transaction.save()
+            return redirect('credit_card_transactions')
+    else:
+        form = CreditCardTransactionForm()
+    return render(request, 'default_add.html', {'form': form,} | transactions_dict)
+
+def edit_credit_card_transaction(request, pk):
+    credit_card_transaction = get_object_or_404(CreditCardTransaction, pk = pk)
+    if request.method == 'POST':
+        form = CreditCardTransactionForm(request.POST, instance = credit_card_transaction)
+        if form.is_valid():
+            form.save()
+            return redirect('credit_card_transactions')
+    elif request.method == 'GET':
+        form = CreditCardTransactionForm(instance = credit_card_transaction)
+    return render(request, 'default_edit.html', {
+        'form': form,
+        'object': transaction,
+    } | transactions_dict)
+
+def delete_credit_card_transaction(request, pk):
+    CreditCardTransaction.objects.filter(pk = pk).delete()
+    return redirect('credit_card_transactions')
 
 # -----------------------Periodic Transaction----------------------------------
 periodic_transactions_dict = {
