@@ -295,7 +295,7 @@ def edit_credit_card_transaction(request, pk):
         form = CreditCardTransactionForm(instance = credit_card_transaction)
     return render(request, 'default_edit.html', {
         'form': form,
-        'object': transaction,
+        'object': credit_card_transaction,
     } | transactions_dict)
 
 def delete_credit_card_transaction(request, pk):
