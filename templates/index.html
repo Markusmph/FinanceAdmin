@@ -28,5 +28,9 @@
 {% endblock %}
 
 {% block rightcontent %}
-    No content yet
+    {{div| safe}}
+{% endblock %}
+
+{% block script_content %}
+    {{script| safe}}
 {% endblock %}
