@@ -1,4 +1,15 @@
+from bokeh.plotting import figure
+from bokeh.embed import components
+
+from datetime import date
+from decimal import Decimal
+
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic.list import ListView
+
 from .forms import (
     AccountForm, 
     CategoryForm,
@@ -10,8 +21,6 @@ from .forms import (
     ProfileForm,
     TransactionForm
 )
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from .models import (
     Account,
     Category,
@@ -23,10 +32,7 @@ from .models import (
     Profile,
     Transaction,
 )
-from django.views.generic.list import ListView
-from decimal import Decimal
-# from django.contrib.auth.forms import UserCreationForm
-from datetime import date
+
 
 def signup(request):
     if request.method == 'POST':
@@ -49,7 +55,15 @@ def signup(request):
     return render(request, 'signup.html', {'form_profile': form_profile, 'form_user': form_user})
 
 def home(request):
-    return render(request, 'index.html', {})
+    x = [1, 2, 3, 4, 5]
+    y = [6, 7, 2, 4, 5]
+    total_by_day = Transaction.objects.values('date').annotate(day_total=Sum('amount')).order_by('date')
+    # print(total_by_day)
+    # dates = [date for day]
+    plot = figure(width=400, height=400)
+    plot.line(x, y, color="navy", alpha=0.5)
+    script, div = components(plot)
+    return render(request, 'index.html', {'script': script, 'div': div})
 
 def accounts(request):
     return render(request, 'accounts.html', {})
@@ -262,7 +276,7 @@ def delete_transaction(request, pk):
     return redirect('transactions')
 
 # -----------------------Credit Card Transactions----------------------------------
-transactions_dict = {
+credit_card_transactions_dict = {
     'object_plural_underscores': 'credit_card_transactions',
     'object_pluarl_spaces': 'credit card transactions',
     'object_singular_underscores': 'credit_card_transaction',
@@ -270,7 +284,7 @@ transactions_dict = {
 }
 def credit_card_transactions(request):
     objects = CreditCardTransaction.objects.filter(user = request.user).order_by('date')
-    return render(request, 'default_list.html', {'objects': objects} | transactions_dict)
+    return render(request, 'default_list.html', {'objects': objects} | credit_card_transactions_dict)
 
 def add_credit_card_transaction(request):
     if request.method == 'POST':
