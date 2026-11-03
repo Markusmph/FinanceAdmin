@@ -105,16 +105,19 @@ class CreditCardTransaction(models.Model):
     name = models.CharField(max_length = 255, default = '')
     amount = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0)
     periodic = models.BooleanField(default = False)
-    amount_paid = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0)
+    # amount_paid = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0)
     date = models.DateField(default = date.today)
     account = models.ForeignKey(Account, on_delete = models.SET_NULL, null = True, blank = True)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     category = models.ForeignKey(Category, on_delete = models.SET_NULL, null = True, blank = True)
     periodic_transaction = models.ForeignKey(PeriodicTransaction, on_delete = models.SET_NULL, null = True, blank = True)
-    # payment_transaction = models.ForeignKey(Transaction, on_delete = models.SET_NULL, null = True, blank = True)
 
     def __str__(self):
-        return f'{self.description}'
+        return f'{self.name}'
+
+    @property
+    def amount_paid(self):
+        return sum([payment.amount for payment in self.payments.all()])
 
 
 class Transaction(models.Model):
@@ -130,7 +133,7 @@ class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete = models.PROTECT)
     category = models.ForeignKey(Category, on_delete = models.PROTECT)
     income_customization = models.ForeignKey(IncomeCustomizationWithCategory, on_delete = models.SET_NULL, null = True, blank = True)
-    credit_card_transaction = models.ForeignKey(CreditCardTransaction, on_delete = models.SET_NULL, null = True, blank = True)
+    credit_card_transaction = models.ForeignKey(CreditCardTransaction, on_delete = models.SET_NULL, null = True, blank = True, related_name = 'payments')
     periodic_transaction = models.ForeignKey(PeriodicTransaction, on_delete = models.SET_NULL, null = True, blank = True)
 
     def __str__(self):

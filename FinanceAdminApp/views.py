@@ -262,7 +262,7 @@ def delete_transaction(request, pk):
     return redirect('transactions')
 
 # -----------------------Credit Card Transactions----------------------------------
-transactions_dict = {
+credit_card_transactions_dict = {
     'object_plural_underscores': 'credit_card_transactions',
     'object_pluarl_spaces': 'credit card transactions',
     'object_singular_underscores': 'credit_card_transaction',
@@ -270,7 +270,7 @@ transactions_dict = {
 }
 def credit_card_transactions(request):
     objects = CreditCardTransaction.objects.filter(user = request.user).order_by('date')
-    return render(request, 'default_list.html', {'objects': objects} | transactions_dict)
+    return render(request, 'default_list.html', {'objects': objects} | credit_card_transactions_dict)
 
 def add_credit_card_transaction(request):
     if request.method == 'POST':
@@ -282,7 +282,7 @@ def add_credit_card_transaction(request):
             return redirect('credit_card_transactions')
     else:
         form = CreditCardTransactionForm()
-    return render(request, 'default_add.html', {'form': form,} | transactions_dict)
+    return render(request, 'default_add.html', {'form': form,} | credit_card_transactions_dict)
 
 def edit_credit_card_transaction(request, pk):
     credit_card_transaction = get_object_or_404(CreditCardTransaction, pk = pk)
@@ -296,7 +296,7 @@ def edit_credit_card_transaction(request, pk):
     return render(request, 'default_edit.html', {
         'form': form,
         'object': credit_card_transaction,
-    } | transactions_dict)
+    } | credit_card_transactions_dict)
 
 def delete_credit_card_transaction(request, pk):
     CreditCardTransaction.objects.filter(pk = pk).delete()
