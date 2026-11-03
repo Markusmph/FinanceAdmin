@@ -52,7 +52,14 @@ class CreditCardTransactionForm(forms.ModelForm):
     )
     class Meta:
         model = CreditCardTransaction
-        fields = ['name', 'date', 'amount', 'account', 'category', 'periodic', 'amount_paid', 'periodic_transaction']
+        fields = ['name', 'date', 'amount', 'account', 'category', 'periodic', 'periodic_transaction']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['amount_paid'].initial = self.instance.amount_paid
+        else:
+            self.fields['amount_paid'].initial = Decimal('0')
 
 class PeriodicTransactionForm(forms.ModelForm):
     class Meta:

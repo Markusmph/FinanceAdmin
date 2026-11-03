@@ -117,7 +117,7 @@ class CreditCardTransaction(models.Model):
 
     @property
     def amount_paid(self):
-        return sum([payment.amount for payment in self.payments.amount].append(Decimal(0)))
+        return sum([payment.amount for payment in self.payments.all()])
 
 
 class Transaction(models.Model):
